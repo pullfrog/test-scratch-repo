@@ -1,4 +1,4 @@
-name: Tag probe (v2)
+name: Tag probe (v3)
 on:
   workflow_dispatch:
     inputs:
