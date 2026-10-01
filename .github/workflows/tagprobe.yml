@@ -1,0 +1,28 @@
+name: Tag probe
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        type: string
+        required: true
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SHA: ${{ inputs.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Create a tag via the REST API
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/probe-api-$GITHUB_RUN_ID" -f sha="$SHA" --jq .ref && echo "API_CREATE=ok" || echo "API_CREATE=refused"
+      - name: Move a tag via the REST API
+        run: |
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/probe-move" -f sha="$SHA" -F force=true --jq .object.sha && echo "API_MOVE=ok" || echo "API_MOVE=refused"
+      - name: Push a tag with git
+        run: |
+          git push origin "$SHA:refs/tags/probe-git-$GITHUB_RUN_ID" && echo "GIT_PUSH=ok" || echo "GIT_PUSH=refused"
