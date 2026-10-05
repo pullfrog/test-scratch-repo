@@ -6,4 +6,9 @@ function subtract(a, b) {
   return a - b;
 }
 
-module.exports = { add, subtract };
+function average(numbers) {
+  const total = numbers.reduce((sum, n) => sum + n, 0);
+  return total / numbers.length;
+}
+
+module.exports = { add, subtract, average };
