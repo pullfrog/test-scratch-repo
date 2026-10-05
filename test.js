@@ -26,4 +26,6 @@ assert.throws(() => median({ length: 2 }), TypeError);
 assert.throws(() => median([1, "2", 3]), TypeError);
 assert.throws(() => median([1, null]), TypeError);
 
+assert.strictEqual(average([5]), 5);
+
 console.log("All tests passed!");
